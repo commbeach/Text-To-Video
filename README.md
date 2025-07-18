@@ -1,3 +1,8 @@
+Projeto de adaptação de scripts de geração de vídeo com IA a partir dos repositórios 
+
+https://github.com/SamurAIGPT/Text-To-Video-AI
+https://github.com/FolhaSP/mosaico
+
 # Text To Video AI 🔥
 
 Generate video from text using AI
