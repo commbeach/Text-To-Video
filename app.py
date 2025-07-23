@@ -42,11 +42,11 @@ def main():
     print(f"    {len(captions)} legendas geradas")
 
     #5. Legenda para Video
-    captions = generate_frase("audio_tts.wav")
+    captions_frase = generate_frase("audio_tts.wav")
 
     # 4. Queries de vídeo
     print("[4/5] Gerando queries de busca para vídeos de fundo...")
-    queries = getVideoSearchQueriesTimed(script, captions)
+    queries = getVideoSearchQueriesTimed(script, captions_frase)
     if not queries:
         print("Nenhuma query gerada; abortando.")
         return
