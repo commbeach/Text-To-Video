@@ -57,6 +57,7 @@ def main():
 
     # 6. Render final
     print("Renderizando vídeo final...")
+    print(args.video_source)
     output = get_output_media("audio_tts.wav", captions, urls, words, args.video_source)
     print(f"Vídeo gerado em: {output}")
 
