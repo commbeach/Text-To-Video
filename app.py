@@ -6,6 +6,7 @@ import asyncio
 from utility.script.script_generator import generate_script
 from utility.audio.audio_generator import generate_audio
 from utility.captions.karaoke_generator import generate_timed_captions
+from utility.captions.timed_captions_generator import generate_timed_captions as generate_frase
 from utility.video.video_search_query_generator import getVideoSearchQueriesTimed, merge_empty_intervals
 from utility.video.background_video_generator import generate_video_url
 from utility.render.render_karaoke import get_output_media
@@ -35,10 +36,13 @@ def main():
     print(f"[2/5] Gerando áudio TTS...")
     asyncio.run(generate_audio(script, "audio_tts.wav", voice=args.tts_voice))
 
-    # 3. Legendas
+    # 3. Legendas Karaoke
     print("[3/5] Transcrevendo áudio para legendas temporizadas...")
     captions = generate_timed_captions("audio_tts.wav")
     print(f"    {len(captions)} legendas geradas")
+
+    #5. Legenda para Video
+    captions = generate_frase("audio_tts.wav")
 
     # 4. Queries de vídeo
     print("[4/5] Gerando queries de busca para vídeos de fundo...")
