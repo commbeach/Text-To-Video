@@ -90,11 +90,13 @@ def get_output_media(
     timed_captions: list,
     words: list,  # NOVO: lista de palavras para karaokê
     background_video_data: list,
-    video_server: str
+
 ) -> str:
     """
     Gera e exporta o vídeo final com background, legendas (karaokê) e áudio.
     """
+    print(f'words: {(words)}')
+    print(f'back data: {(background_video_data)}')
     # Configura ImageMagick para TextClip
     im_path = find_imagemagick()
     if im_path:
