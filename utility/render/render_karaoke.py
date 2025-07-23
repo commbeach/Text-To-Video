@@ -104,10 +104,8 @@ def get_output_media(
     visual_clips = []
     last_bg_clip = None
 
-    print("DEBUG background_video_data:", background_video_data)
-    
     # 1) Processa clipes de fundo
-    for (t1, t2), video_url in background_video_data:
+    for t1, t2, video_url in background_video_data:
         segment_dur = t2 - t1
         bg = None
 
