@@ -53,6 +53,7 @@ def main():
     # 5. URLs de vídeo e merge
     print("[5/5] Obtendo vídeos de fundo...")
     urls = generate_video_url(queries, args.video_source)
+    print(urls)
     urls = merge_empty_intervals(urls)
 
     # 6. Render final
