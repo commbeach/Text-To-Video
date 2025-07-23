@@ -90,6 +90,7 @@ def get_output_media(
     timed_captions: list,
     words: list,  # NOVO: lista de palavras para karaokê
     background_video_data: list,
+    video_server: str
 
 ) -> str:
     """
