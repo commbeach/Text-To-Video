@@ -38,15 +38,12 @@ def main():
 
     # 3. Legendas Karaoke
     print("[3/5] Transcrevendo áudio para legendas temporizadas...")
-    captions = generate_timed_captions("audio_tts.wav")
-    print(f"    {len(captions)} legendas geradas")
-
-    #5. Legenda para Video
-    captions_frase = generate_frase("audio_tts.wav")
+    captions, words = generate_timed_captions("audio_tts.wav")
+    print(f" {len(captions)} legendas geradas")
 
     # 4. Queries de vídeo
     print("[4/5] Gerando queries de busca para vídeos de fundo...")
-    queries = getVideoSearchQueriesTimed(script, captions_frase)
+    queries = getVideoSearchQueriesTimed(script, captions)
     if not queries:
         print("Nenhuma query gerada; abortando.")
         return
@@ -58,7 +55,7 @@ def main():
 
     # 6. Render final
     print("Renderizando vídeo final...")
-    output = get_output_media("audio_tts.wav", captions, urls, args.video_source)
+    output = get_output_media("audio_tts.wav", captions, urls, words, args.video_source)
     print(f"Vídeo gerado em: {output}")
 
 if __name__ == '__main__':
