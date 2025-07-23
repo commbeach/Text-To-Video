@@ -108,7 +108,8 @@ def get_output_media(
 
 
     # 1) Processa clipes de fundo
-    for t1, t2, video_url in background_video_data:
+    for (t1,t2),video_url in background_video_data:
+
         segment_dur = float(t2) - float(t1)
         bg = None
 

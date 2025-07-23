@@ -39,6 +39,8 @@ def main():
     # 3. Legendas Karaoke
     print("[3/5] Transcrevendo áudio para legendas temporizadas...")
     captions, words = generate_timed_captions("audio_tts.wav")
+    print(f"captions {(captions)}")
+    print(f"words {(words)}")
     print(f" {len(captions)} legendas geradas")
 
     # 4. Queries de vídeo
