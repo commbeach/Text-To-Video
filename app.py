@@ -28,6 +28,10 @@ def main():
     )
     args = parser.parse_args()
 
+    im_path = find_imagemagick()
+    print("DEBUG: IMAGEMAGICK FOUND AT:", im_path)
+    if im_path:
+        os.environ['IMAGEMAGICK_BINARY'] = im_path
     # 1. Roteiro
     script = generate_script(args.topic)
     print(f"[1/5] Roteiro gerado:\n{script}\n")

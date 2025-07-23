@@ -58,6 +58,8 @@ def get_output_media(
     im_path = find_imagemagick()
     if im_path:
         os.environ['IMAGEMAGICK_BINARY'] = im_path
+    else:
+        print("⚠️ ImageMagick não encontrado, fontes e cores podem não funcionar!")
 
     temp_files = []
     visual_clips = []
