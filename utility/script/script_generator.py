@@ -8,7 +8,7 @@ from openai import OpenAI
 load_dotenv()
 
 # Configurações de parâmetros
-target_duration = 60     # duração alvo em segundos
+target_duration = 60  # duração alvo em segundos
 approx_words = 180       # contagem aproximada de palavras
 orientation = "horizontal 16:9"
 template_path = os.path.join(

@@ -3,6 +3,10 @@ import os
 from dotenv import load_dotenv
 import requests
 from utility.utils import log_response, LOG_TYPE_PEXEL
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+import time
+
 
 # Carrega variáveis de ambiente
 load_dotenv()
@@ -16,7 +20,7 @@ def search_videos(query_string: str, orientation_landscape: bool = True) -> dict
     Busca vídeos no Pexels com base numa query e orientação.
     Retorna o JSON da API.
     """
-    url = "https://api.pexels.com/videos/search"
+    url = "http://api.pexels.com/videos/search"
     headers = {
         "Authorization": PEXELS_API_KEY,
         "User-Agent": (
@@ -30,7 +34,13 @@ def search_videos(query_string: str, orientation_landscape: bool = True) -> dict
         "orientation": "landscape" if orientation_landscape else "portrait",
         "per_page": 15
     }
-    response = requests.get(url, headers=headers, params=params, timeout=10)
+    session = requests.Session()
+    retry = Retry(connect=3, backoff_factor=5)
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+
+    response = session.get(url, headers=headers, params=params, timeout=100, verify=False )
     response.raise_for_status()
     data = response.json()
     log_response(LOG_TYPE_PEXEL, query_string, data)
@@ -72,7 +82,7 @@ def get_best_video(query_string: str, orientation_landscape: bool = True, used_v
     return None
 
 
-def generate_video_url(timed_searches: list, video_server: str) -> list:
+def generate_video_url(timed_searches: list, video_server: str, orientation_landscape: bool = True) -> list:
     """
     Para cada segmento ([t1, t2], [kw1, kw2,...]), busca um vídeo correspondente.
     Suporta apenas 'pexels'.
@@ -81,10 +91,12 @@ def generate_video_url(timed_searches: list, video_server: str) -> list:
     results = []
     if video_server.lower() == 'pexels':
         used = []
+        i=0
         for (t1, t2), queries in timed_searches:
+            i=i+1
             url = None
             for q in queries:
-                link = get_best_video(q, True, used)
+                link = get_best_video(q, orientation_landscape, used)
                 if link:
                     used.append(link.split('.hd')[0])
                     url = link

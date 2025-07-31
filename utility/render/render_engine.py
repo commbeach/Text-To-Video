@@ -21,16 +21,16 @@ from moviepy import video as mpy_video
 from moviepy.video.fx.all import loop
 
 # Resolução alvo 16:9
-target_width, target_height = 1920, 1080
+global target_width, target_height 
 # Configurações de legenda
-font_size = 48
-caption_width = int(target_width * 0.8)  # largura máxima para wrap
+font_size = 64
+global caption_width   # largura máxima para wrap
 
 
 def download_file(url: str, filename: str) -> None:
     """Baixa o arquivo da URL para o caminho local."""
     headers = {"User-Agent": "Mozilla/5.0"}
-    resp = requests.get(url, headers=headers, timeout=30)
+    resp = requests.get(url, headers=headers, timeout=30, verify=False)
     resp.raise_for_status()
     with open(filename, 'wb') as f:
         f.write(resp.content)
@@ -49,8 +49,24 @@ def get_output_media(
     audio_file_path: str,
     timed_captions: list,
     background_video_data: list,
-    video_server: str
+    video_server: str,
+    orientation_landscape: bool = True
 ) -> str:
+    
+    global target_width, target_height 
+    global caption_width
+    global caption_height
+
+    #Orientcao
+    if(orientation_landscape):
+        target_width, target_height = 1920,1080
+        caption_width = int(target_width * 0.8)
+        caption_height = target_height * 2
+
+    else:
+        target_width, target_height = 1080,1920
+        caption_width = int(target_width * 0.8)
+        caption_height = target_height * 4 +100
     """
     Gera e exporta o vídeo final com background, legendas e áudio.
     """
@@ -88,6 +104,7 @@ def get_output_media(
                 print(f"⚠️ Falha ao carregar vídeo '{video_url}': {e}")
                 bg = None
         else:
+            print('video nao carregado')
             # Fallback: usa último clipe ou nada
             if last_bg_clip:
                 if last_bg_clip.duration >= segment_dur:
@@ -125,9 +142,10 @@ def get_output_media(
             stroke_color="black",
             method="caption",
             size=(caption_width, None),
-            align="center"
+            align="center",
+    
         ).set_start(t1).set_end(t2)
-        text_clip = text_clip.set_position(("center", target_height - font_size * 2))
+        text_clip = text_clip.set_position(("center", target_height - font_size * 4))
         visual_clips.append(text_clip)
 
     # 3) Composição final

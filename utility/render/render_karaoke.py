@@ -30,7 +30,7 @@ caption_width = int(target_width * 0.8)  # largura máxima para wrap
 def download_file(url: str, filename: str) -> None:
     """Baixa o arquivo da URL para o caminho local."""
     headers = {"User-Agent": "Mozilla/5.0"}
-    resp = requests.get(url, headers=headers, timeout=30)
+    resp = requests.get(url, headers=headers, timeout=30, verify=False)
     resp.raise_for_status()
     with open(filename, 'wb') as f:
         f.write(resp.content)
@@ -96,8 +96,6 @@ def get_output_media(
     """
     Gera e exporta o vídeo final com background, legendas (karaokê) e áudio.
     """
-    print(f'words: {(words)}')
-    print(f'back data: {(background_video_data)}')
     # Configura ImageMagick para TextClip
     im_path = find_imagemagick()
     if im_path:

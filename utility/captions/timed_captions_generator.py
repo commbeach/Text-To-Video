@@ -36,6 +36,7 @@ def generate_timed_captions(
         consider_punctuation=CONSIDER_PUNCTUATION
     )
     # Normaliza duração das legendas para o intervalo desejado
+    print(captions)
     return normalize_captions(captions)
 
 
@@ -94,8 +95,7 @@ def get_captions_with_time(
         chunks = []
         for sentence in sentences:
             words = sentence.split()
-            cleaned = [clean_word(w) for w in words]
-            chunks.extend(split_words_by_size(cleaned, max_caption_size))
+            chunks.extend(split_words_by_size(words, max_caption_size))
     else:
         words = text.split()
         cleaned = [clean_word(w) for w in words]
@@ -114,7 +114,7 @@ def get_captions_with_time(
 def normalize_captions(captions):
     """
     Ajusta legendas para que cada segmento tenha entre MIN_CAPTION_DURATION e MAX_CAPTION_DURATION.
-    Combina segmentos muito curtos e divide muito longos.
+    Combina segmentos muito curtos e divide muito longos, mas evita unir se um dos blocos termina com pontuação final.
     """
     normalized = []
     buffer_text = ''
@@ -122,30 +122,38 @@ def normalize_captions(captions):
 
     for (start, end), text in captions:
         duration = end - start
+
+        # Se já temos buffer em andamento
         if buffer_text:
-            # mescla buffer e segmento atual
+            # Verifica se a última frase terminou com pontuação forte
+            if buffer_text.strip()[-1] in '.!?':
+                # Fecha o buffer e começa novo
+                normalized.append(((buffer_start, start), buffer_text))
+                buffer_text = text
+                buffer_start = start
+                continue
+
+            # Junta buffer com trecho atual
             buffer_text += ' ' + text
             buffer_end = end
             total_dur = buffer_end - buffer_start
+
             if total_dur >= MIN_CAPTION_DURATION:
                 normalized.append(((buffer_start, buffer_end), buffer_text))
                 buffer_text = ''
                 buffer_start = None
-            # se ainda curto, continua acumulando
+            # Se ainda curto, continua acumulando
         elif duration < MIN_CAPTION_DURATION:
-            # inicia buffer
             buffer_text = text
             buffer_start = start
         elif duration > MAX_CAPTION_DURATION:
-            # divide segment longo em 2 partes aproximadas
             midpoint = (start + end) / 2
-            # primeira metade
             normalized.append(((start, midpoint), text))
             normalized.append(((midpoint, end), text))
         else:
             normalized.append(((start, end), text))
 
-    # se sobra buffer ao final
+    # Se sobrar buffer ao final
     if buffer_text:
         last_end = captions[-1][0][1]
         normalized.append(((buffer_start, last_end), buffer_text))

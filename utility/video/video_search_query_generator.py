@@ -8,12 +8,15 @@ from textwrap import dedent
 from dotenv import load_dotenv
 from openai import OpenAI
 from utility.utils import log_response, LOG_TYPE_GPT
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
 
 # Carrega variáveis de ambiente de .env
 load_dotenv()
 
 # Configuração de parâmetros de duração
-total_duration = 60      # duração alvo em segundos
+total_duration = 60     # duração alvo em segundos
 min_segment = 4           # duração mínima de cada bloco (s)
 max_segment = 6           # duração máxima de cada bloco (s)
 est_segments = int(total_duration / ((min_segment + max_segment) / 2))
