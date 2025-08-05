@@ -16,6 +16,7 @@ def main():
     )
     parser.add_argument("topic", type=str, help="Tópico para o roteiro do vídeo")
     parser.add_argument("--v", action="store_false", help="Gera video vertical")
+    parser.add_argument("--f", action="store_true", help="Gera voz feminina")
     parser.add_argument(
         "--tts-voice", type=str,
         default=os.getenv('TTS_VOICE', 'pt-BR-AntonioNeural'),
@@ -27,7 +28,7 @@ def main():
         help="Serviço de vídeo de fundo (e.g. pexels)"
     )
     args = parser.parse_args()
-
+    print(args.topic)
     # 1. Roteiro
     file_path = 'script.txt'
     try: 
@@ -40,8 +41,12 @@ def main():
         print(f"[1/5] Roteiro gerado:\n{script}\n")
 
     # 2. Áudio TTS
+    voz_locutor=args.tts_voice
     print(f"[2/5] Gerando áudio TTS...")
-    asyncio.run(generate_audio(script, "audio_tts.wav", voice=args.tts_voice))
+    if(args.f):
+        voz_locutor = "pt-BR-ThalitaMultilingualNeural" 
+    
+    asyncio.run(generate_audio(script, "audio_tts.wav", voice=voz_locutor))
 
     # 3. Legendas Karaoke
     print("[3/5] Transcrevendo áudio para legendas temporizadas...")

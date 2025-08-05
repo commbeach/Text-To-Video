@@ -61,12 +61,12 @@ def get_output_media(
     if(orientation_landscape):
         target_width, target_height = 1920,1080
         caption_width = int(target_width * 0.8)
-        caption_height = target_height * 2
+        caption_height = target_height - font_size* 3
 
     else:
         target_width, target_height = 1080,1920
         caption_width = int(target_width * 0.8)
-        caption_height = target_height * 4 +100
+        caption_height = target_height - font_size * 7
     """
     Gera e exporta o vídeo final com background, legendas e áudio.
     """
@@ -136,6 +136,7 @@ def get_output_media(
         safe_txt = txt.replace('“', '"').replace('”', '"').replace('’', "'").replace('–', '-')
         text_clip = TextClip(
             safe_txt,
+            font='Helvetica-Bold',
             fontsize=font_size,
             color="white",
             stroke_width=2,
@@ -143,9 +144,9 @@ def get_output_media(
             method="caption",
             size=(caption_width, None),
             align="center",
-    
+
         ).set_start(t1).set_end(t2)
-        text_clip = text_clip.set_position(("center", target_height - font_size * 4))
+        text_clip = text_clip.set_position(("center", caption_height))
         visual_clips.append(text_clip)
 
     # 3) Composição final
